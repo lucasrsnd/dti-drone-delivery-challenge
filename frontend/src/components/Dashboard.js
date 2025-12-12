@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import DroneList from './DroneList';
-import OrderList from './OrderList';
 import DroneMap from './DroneMap';
 import MetricsChart from './MetricsChart';
 import ControlPanel from './ControlPanel';
@@ -11,6 +10,13 @@ const Dashboard = () => {
   const [metrics, setMetrics] = useState({});
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  // NOVOS ESTADOS PARA PAGINAÇÃO E FILTROS
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [priorityFilter, setPriorityFilter] = useState('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchAllData();
@@ -102,6 +108,70 @@ const Dashboard = () => {
     }
   };
 
+  // Funções de filtragem e paginação
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = searchTerm === '' || 
+      (order.customerName && order.customerName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (order.id && order.id.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
+    const matchesPriority = priorityFilter === 'ALL' || order.priority === priorityFilter;
+    
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
+
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentOrders = filteredOrders.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, priorityFilter]);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('ALL');
+    setPriorityFilter('ALL');
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   const activeDrones = drones.filter(d => 
     d.status === 'FLYING' || d.status === 'DELIVERING' || d.status === 'LOADING'
   ).length;
@@ -111,9 +181,9 @@ const Dashboard = () => {
   const urgentOrders = orders.filter(o => o.priority === 'URGENT').length;
 
   return (
-    <div className="dashboard-container">
+    <div className="section-container">
       {/* Seção 1: Visão Geral */}
-      <div className="section fade-in">
+      <section id="visao-geral" className="section fade-in">
         <h3 className="section-title">📊 Visão Geral da Operação</h3>
         
         {loading ? (
@@ -181,11 +251,12 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Seção 2: Mapa e Análises */}
-      <div className="dashboard-row">
-        <div className="section fade-in">
+      {/* Seção 2: Monitoramento + Análise */}
+      <div className="monitoramento-analise-row">
+        {/* Monitoramento em Tempo Real */}
+        <section id="monitoramento" className="section fade-in">
           <div className="section-header">
             <h3 className="section-title">🗺️ Monitoramento em Tempo Real</h3>
             <div className="connection-status">
@@ -196,23 +267,43 @@ const Dashboard = () => {
           <div className="map-container">
             <DroneMap drones={drones} orders={orders} />
           </div>
-          <div className="map-stats">
-            <div className="map-stat">
-              <span className="stat-label">Em voo:</span>
-              <span className="stat-value">{drones.filter(d => d.status === 'FLYING').length}</span>
+          
+          {/* CARDS DE STATUS - RESTAURADOS */}
+          <div className="map-status-cards">
+            <div className="map-status-card">
+              <div className="map-status-icon" style={{ background: 'rgba(37, 99, 235, 0.2)', color: '#3b82f6' }}>
+                ✈️
+              </div>
+              <div className="map-status-content">
+                <div className="map-status-label">Em Voo</div>
+                <div className="map-status-value">{drones.filter(d => d.status === 'FLYING').length}</div>
+              </div>
             </div>
-            <div className="map-stat">
-              <span className="stat-label">Entregando:</span>
-              <span className="stat-value">{drones.filter(d => d.status === 'DELIVERING').length}</span>
+            
+            <div className="map-status-card">
+              <div className="map-status-icon" style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#f59e0b' }}>
+                📦
+              </div>
+              <div className="map-status-content">
+                <div className="map-status-label">Entregando</div>
+                <div className="map-status-value">{drones.filter(d => d.status === 'DELIVERING').length}</div>
+              </div>
             </div>
-            <div className="map-stat">
-              <span className="stat-label">Base:</span>
-              <span className="stat-value">{drones.filter(d => d.status === 'IDLE' || d.status === 'CHARGING').length}</span>
+            
+            <div className="map-status-card">
+              <div className="map-status-icon" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>
+                🏠
+              </div>
+              <div className="map-status-content">
+                <div className="map-status-label">Na Base</div>
+                <div className="map-status-value">{drones.filter(d => d.status === 'IDLE' || d.status === 'CHARGING').length}</div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="section fade-in">
+        {/* Análise de Desempenho */}
+        <section className="section fade-in">
           <h3 className="section-title">📈 Análise de Desempenho</h3>
           <div className="chart-container">
             <MetricsChart drones={drones} orders={orders} />
@@ -220,7 +311,7 @@ const Dashboard = () => {
           <div className="performance-summary">
             <div className="performance-item">
               <div className="performance-label">
-                <span>Eficiência de Rota</span>
+                <span>Eficiência de Operação</span>
                 <span>85%</span>
               </div>
               <div className="performance-bar">
@@ -229,58 +320,19 @@ const Dashboard = () => {
             </div>
             <div className="performance-item">
               <div className="performance-label">
-                <span>Utilização da Frota</span>
-                <span>72%</span>
+                <span>Satisfação do Cliente</span>
+                <span>94%</span>
               </div>
               <div className="performance-bar">
-                <div className="performance-fill" style={{ width: '72%' }}></div>
+                <div className="performance-fill" style={{ width: '94%' }}></div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
-      {/* Seção 3: Dados Detalhados */}
-      <div className="dashboard-row">
-        <div className="section fade-in">
-          <div className="data-card">
-            <div className="data-card-header">
-              <h4 className="data-card-title">✈️ Frota de Drones</h4>
-              <button 
-                className="refresh-button" 
-                onClick={fetchDrones}
-                disabled={loading}
-              >
-                {loading ? 'Atualizando...' : '🔄 Atualizar'}
-              </button>
-            </div>
-            <div className="data-card-body">
-              <DroneList drones={drones} onRefresh={fetchDrones} />
-            </div>
-          </div>
-        </div>
-
-        <div className="section fade-in">
-          <div className="data-card">
-            <div className="data-card-header">
-              <h4 className="data-card-title">📦 Pedidos em Andamento</h4>
-              <button 
-                className="refresh-button" 
-                onClick={fetchOrders}
-                disabled={loading}
-              >
-                {loading ? 'Atualizando...' : '🔄 Atualizar'}
-              </button>
-            </div>
-            <div className="data-card-body">
-              <OrderList orders={orders} onRefresh={fetchOrders} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Seção 4: Controles */}
-      <div className="section fade-in">
+      {/* Seção 3: Controle de Operações */}
+      <section id="controle" className="section fade-in">
         <h3 className="section-title">🎮 Controle de Operações</h3>
         <ControlPanel 
           onAllocate={handleAllocate}
@@ -311,7 +363,230 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Seção 4: Frota de Drones */}
+      <section id="frota" className="section fade-in">
+        <div className="data-card">
+          <div className="data-card-header">
+            <h4 className="data-card-title">✈️ Frota de Drones</h4>
+            <button 
+              className="refresh-button-styled" 
+              onClick={fetchDrones}
+              disabled={loading}
+            >
+              {loading ? '🔄 Atualizando...' : '🔄 Atualizar'}
+            </button>
+          </div>
+          <div className="data-card-body">
+            <DroneList drones={drones} onRefresh={fetchDrones} />
+          </div>
+        </div>
+      </section>
+
+      {/* Seção 5: Pedidos em Andamento (Tabela Horizontal com Paginação) */}
+      <section id="pedidos" className="section fade-in">
+        <div className="data-card">
+          <div className="data-card-header">
+            <h4 className="data-card-title">📦 Pedidos em Andamento ({filteredOrders.length})</h4>
+            <button 
+              className="refresh-button-styled" 
+              onClick={fetchOrders}
+              disabled={loading}
+            >
+              {loading ? '🔄 Atualizando...' : '🔄 Atualizar'}
+            </button>
+          </div>
+          
+          <div className="data-card-body">
+            {/* Filtros de Busca */}
+            <div className="pedidos-filtro">
+              <div className="search-box">
+                <span className="search-icon">🔍</span>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Buscar por cliente ou ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              
+              <select 
+                className="filter-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="ALL">Todos os status</option>
+                <option value="PENDING">Pendentes</option>
+                <option value="ASSIGNED">Atribuídos</option>
+                <option value="IN_TRANSIT">Em Trânsito</option>
+                <option value="DELIVERED">Entregues</option>
+                <option value="CANCELLED">Cancelados</option>
+              </select>
+              
+              <select 
+                className="filter-select"
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+              >
+                <option value="ALL">Todas prioridades</option>
+                <option value="URGENT">Urgente</option>
+                <option value="HIGH">Alta</option>
+                <option value="MEDIUM">Média</option>
+                <option value="LOW">Baixa</option>
+              </select>
+              
+              <button className="clear-filters" onClick={clearFilters}>
+                <span>🗑️</span>
+                Limpar Filtros
+              </button>
+            </div>
+            
+            {/* Tabela de Pedidos */}
+            <div className="pedidos-table-container">
+              <table className="pedidos-horizontal-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Peso</th>
+                    <th>Localização</th>
+                    <th>Criado</th>
+                    <th>Entrega</th>
+                    <th>Drone</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentOrders.map((order) => (
+                    <tr key={order.id}>
+                      <td>
+                        <strong>{order.customerName}</strong>
+                        <br />
+                        <small className="text-muted">ID: {order.id ? order.id.substring(0, 8) : 'N/A'}</small>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${
+                          order.priority === 'URGENT' ? 'status-danger' :
+                          order.priority === 'HIGH' ? 'status-warning' :
+                          'status-idle'
+                        }`}>
+                          {order.priority || 'N/A'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${
+                          order.status === 'DELIVERED' ? 'status-active' :
+                          order.status === 'IN_TRANSIT' ? 'status-warning' :
+                          order.status === 'PENDING' ? 'status-danger' :
+                          'status-idle'
+                        }`}>
+                          {order.status || 'N/A'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="d-flex align-items-center">
+                          <span className="me-2">📦</span>
+                          {order.weight ? order.weight.toFixed(2) : '0.00'} kg
+                        </div>
+                      </td>
+                      <td>
+                        📍 ({order.locationX ? order.locationX.toFixed(1) : '0.0'}, 
+                        {order.locationY ? order.locationY.toFixed(1) : '0.0'})
+                      </td>
+                      <td>
+                        <small>{order.createdAt ? new Date(order.createdAt).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        }) : '-'}</small>
+                      </td>
+                      <td>
+                        {order.deliveredAt ? (
+                          <small className="text-success">
+                            ✅ {new Date(order.deliveredAt).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </small>
+                        ) : (
+                          <small className="text-muted">Em andamento</small>
+                        )}
+                      </td>
+                      <td>
+                        {order.assignedDrone ? (
+                          <small>{order.assignedDrone.substring(0, 8)}...</small>
+                        ) : (
+                          <small className="text-muted">Não atribuído</small>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {currentOrders.length === 0 && (
+                    <tr>
+                      <td colSpan="8" className="text-center text-muted py-4">
+                        {searchTerm || statusFilter !== 'ALL' || priorityFilter !== 'ALL' 
+                          ? 'Nenhum pedido encontrado com os filtros aplicados' 
+                          : 'Nenhum pedido encontrado'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Paginação */}
+            {filteredOrders.length > 0 && (
+              <div className="pedidos-pagination">
+                <div className="pagination-info">
+                  Mostrando {startIndex + 1} - {Math.min(endIndex, filteredOrders.length)} de {filteredOrders.length} pedidos
+                </div>
+                
+                <div className="pagination-controls">
+                  <button 
+                    className="pagination-btn"
+                    onClick={goToPrevPage}
+                    disabled={currentPage === 1 || loading}
+                  >
+                    ← Anterior
+                  </button>
+                  
+                  <div className="page-numbers">
+                    {getPageNumbers().map((page, index) => (
+                      page === '...' ? (
+                        <span key={index} className="page-number" style={{ cursor: 'default' }}>
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          key={index}
+                          className={`page-number ${currentPage === page ? 'active' : ''}`}
+                          onClick={() => goToPage(page)}
+                          disabled={loading}
+                        >
+                          {page}
+                        </button>
+                      )
+                    ))}
+                  </div>
+                  
+                  <button 
+                    className="pagination-btn"
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages || loading}
+                  >
+                    Próxima →
+                  </button>
+                </div>
+                
+                <div className="pagination-info">
+                  Página {currentPage} de {totalPages}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
