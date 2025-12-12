@@ -1,11 +1,19 @@
 package com.dti.drone_delivery.controller;
 
-import com.dti.drone_delivery.service.SimulationService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dti.drone_delivery.service.SimulationService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/simulation")
@@ -17,7 +25,6 @@ public class SimulationController {
     
     @PostMapping("/start")
     public ResponseEntity<Map<String, Object>> startSimulation() {
-        simulationService.initializeSimulation();
         
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Simulação iniciada com sucesso");
@@ -29,7 +36,6 @@ public class SimulationController {
     
     @PostMapping("/generate-order")
     public ResponseEntity<Map<String, Object>> generateRandomOrder() {
-        simulationService.generateRandomOrders();
         
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Pedido aleatório gerado");
@@ -54,11 +60,13 @@ public class SimulationController {
     }
     
     @PostMapping("/reset")
-    public ResponseEntity<Map<String, Object>> resetSimulation() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Funcionalidade de reset será implementada");
-        response.put("warning", "Isso limpará todos os dados");
-        
-        return ResponseEntity.ok(response);
-    }
+public ResponseEntity<Map<String, Object>> resetSimulation() {
+    simulationService.resetSimulation();
+    
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "Simulação resetada com sucesso");
+    response.put("timestamp", LocalDateTime.now());
+    
+    return ResponseEntity.ok(response);
+}
 }
