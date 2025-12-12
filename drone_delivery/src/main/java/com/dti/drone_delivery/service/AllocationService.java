@@ -1,13 +1,19 @@
 package com.dti.drone_delivery.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.dti.drone_delivery.model.Drone;
 import com.dti.drone_delivery.model.Order;
 import com.dti.drone_delivery.repository.DroneRepository;
 import com.dti.drone_delivery.repository.OrderRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import java.util.*;
 
 @Service
 @Slf4j
@@ -55,8 +61,7 @@ public class AllocationService {
     }
 
     private double calculateOrderValue(Order order) {
-    double priorityValue;
-    priorityValue = switch (order.getPriority()) {
+        double priorityValue = switch (order.getPriority()) {
             case URGENT -> 4.0;
             case HIGH -> 3.0;
             case MEDIUM -> 2.0;
@@ -64,19 +69,20 @@ public class AllocationService {
             default -> 1.0;
         };
 
-    long minutesWaiting = java.time.Duration.between(
-        order.getCreatedAt(), 
-        java.time.LocalDateTime.now()
-    ).toMinutes();
-    
-    double timeValue = Math.min(5.0, minutesWaiting * 0.01);
-    
-    return priorityValue + timeValue;
-}
+        long minutesWaiting = java.time.Duration.between(
+            order.getCreatedAt(), 
+            java.time.LocalDateTime.now()
+        ).toMinutes();
+        
+        double timeValue = Math.min(5.0, minutesWaiting * 0.01);
+        
+        return priorityValue + timeValue;
+    }
 
     public Map<String, List<Order>> allocateOrdersToDrones() {
         List<Drone> availableDrones = droneRepository.findAvailableDrones(20.0);
-        List<Order> pendingOrders = orderRepository.findByStatus(Order.OrderStatus.PENDING);
+        // CORREÇÃO: Criar nova ArrayList para permitir remoções
+        List<Order> pendingOrders = new ArrayList<>(orderRepository.findByStatus(Order.OrderStatus.PENDING));
         
         Map<String, List<Order>> allocation = new HashMap<>();
         
@@ -109,7 +115,9 @@ public class AllocationService {
                 
                 if (!optimized.isEmpty()) {
                     allocation.put(drone.getId(), optimized);
-                    pendingOrders.removeAll(optimized);
+                    // CORREÇÃO: Criar cópia para evitar UnsupportedOperationException
+                    List<Order> ordersToRemove = new ArrayList<>(optimized);
+                    pendingOrders.removeAll(ordersToRemove);
 
                     optimized.forEach(order -> {
                         order.setStatus(Order.OrderStatus.ASSIGNED);
