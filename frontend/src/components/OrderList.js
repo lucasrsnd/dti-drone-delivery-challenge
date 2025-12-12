@@ -94,7 +94,7 @@ const OrderList = ({ orders, onRefresh }) => {
           </tbody>
         </Table>
         
-        {/* Estatísticas */}
+        {}
         <div className="mt-3 p-2 bg-light rounded">
           <div className="row">
             <div className="col">

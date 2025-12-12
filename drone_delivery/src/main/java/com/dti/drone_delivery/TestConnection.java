@@ -2,6 +2,7 @@ package com.dti.drone_delivery;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -16,7 +17,6 @@ public class TestConnection implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         try {
-            // Testa conexão com PostgreSQL
             Object result = entityManager.createNativeQuery("SELECT 1").getSingleResult();
             System.out.println("✅ CONEXÃO COM POSTGRESQL ESTABELECIDA!");
             System.out.println("✅ Banco: dronedb");

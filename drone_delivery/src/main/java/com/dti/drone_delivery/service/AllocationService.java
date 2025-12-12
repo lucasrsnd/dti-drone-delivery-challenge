@@ -81,7 +81,6 @@ public class AllocationService {
 
     public Map<String, List<Order>> allocateOrdersToDrones() {
         List<Drone> availableDrones = droneRepository.findAvailableDrones(20.0);
-        // CORREÇÃO: Criar nova ArrayList para permitir remoções
         List<Order> pendingOrders = new ArrayList<>(orderRepository.findByStatus(Order.OrderStatus.PENDING));
         
         Map<String, List<Order>> allocation = new HashMap<>();
@@ -115,7 +114,6 @@ public class AllocationService {
                 
                 if (!optimized.isEmpty()) {
                     allocation.put(drone.getId(), optimized);
-                    // CORREÇÃO: Criar cópia para evitar UnsupportedOperationException
                     List<Order> ordersToRemove = new ArrayList<>(optimized);
                     pendingOrders.removeAll(ordersToRemove);
 

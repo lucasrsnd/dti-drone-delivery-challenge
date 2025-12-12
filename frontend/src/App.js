@@ -7,7 +7,7 @@ function App() {
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 80; // Offset para a navbar não fixa
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
       
@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* Navbar com links âncora */}
+      {}
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -62,7 +62,7 @@ function App() {
         </div>
       </nav>
 
-      {/* Header Principal */}
+      {}
       <header className="main-header">
         <div className="header-content">
           <div className="company-info">
@@ -76,12 +76,12 @@ function App() {
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
+      {}
       <main className="main-content">
         <Dashboard />
       </main>
 
-      {/* Footer Corporativo */}
+      {}
       <footer className="app-footer">
         <div className="footer-content">
           <div className="footer-brand">
@@ -97,7 +97,7 @@ function App() {
           </div>
           
           <div className="copyright">
-            © 2024 AeroLogix. Todos os direitos reservados.
+            © 2025 AeroLogix. Todos os direitos reservados.
           </div>
         </div>
       </footer>

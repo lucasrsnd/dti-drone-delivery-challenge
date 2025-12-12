@@ -7,34 +7,28 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const itemsPerPage = 10;
 
-  // Filtrar pedidos
   const filteredOrders = orders.filter(order => {
-    // Filtro por busca
+
     const matchesSearch = searchTerm === '' || 
       order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Filtro por status
+
     const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
-    
-    // Filtro por prioridade
+
     const matchesPriority = priorityFilter === 'ALL' || order.priority === priorityFilter;
     
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  // Calcular paginação
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentOrders = filteredOrders.slice(startIndex, endIndex);
 
-  // Resetar para página 1 quando filtros mudarem
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, priorityFilter]);
 
-  // Funções de paginação
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -53,14 +47,12 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
     }
   };
 
-  // Limpar filtros
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('ALL');
     setPriorityFilter('ALL');
   };
 
-  // Obter badge de status
   const getStatusBadge = (status) => {
     const variants = {
       PENDING: 'status-danger',
@@ -72,7 +64,6 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
     return <span className={`status-badge ${variants[status] || 'status-idle'}`}>{status}</span>;
   };
 
-  // Obter badge de prioridade
   const getPriorityBadge = (priority) => {
     const variants = {
       URGENT: 'status-danger',
@@ -83,7 +74,6 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
     return <span className={`status-badge ${variants[priority] || 'status-idle'}`}>{priority}</span>;
   };
 
-  // Gerar números de páginas
   const getPageNumbers = () => {
     const pages = [];
     const maxPagesToShow = 5;
@@ -118,7 +108,7 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
         </div>
         
         <div className="data-card-body">
-          {/* Filtros de Busca */}
+          {}
           <div className="pedidos-filtro">
             <div className="search-box">
               <span className="search-icon">🔍</span>
@@ -162,7 +152,7 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
             </button>
           </div>
           
-          {/* Tabela de Pedidos */}
+          {}
           <div className="pedidos-table-container">
             <table className="pedidos-horizontal-table">
               <thead>
@@ -237,7 +227,7 @@ const PedidosComPaginacao = ({ orders, loading, onRefresh }) => {
             </table>
           </div>
           
-          {/* Paginação */}
+          {}
           {filteredOrders.length > 0 && (
             <div className="pedidos-pagination">
               <div className="pagination-info">

@@ -24,9 +24,9 @@ const DroneList = ({ drones, onRefresh }) => {
   return (
     <Card>
       <Card.Header className="bg-dark text-white d-flex justify-content-between align-items-center">
-        <h5>📡 Drones ({drones.length})</h5>
+        <h5>Drones ({drones.length})</h5>
         <Button variant="outline-light" size="sm" onClick={onRefresh}>
-          🔄 Atualizar
+          Atualizar
         </Button>
       </Card.Header>
       <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
@@ -83,7 +83,7 @@ const DroneList = ({ drones, onRefresh }) => {
           </tbody>
         </Table>
         
-        {/* Estatísticas */}
+        {}
         <div className="mt-3 p-2 bg-light rounded">
           <small>
             <strong>Resumo:</strong> 

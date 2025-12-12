@@ -75,19 +75,15 @@ class SimulationServiceTest {
     
     @Test
     void testGenerateRandomOrder_withChance_shouldNotThrowException() {
-        // Arrange - NÃO mocke o save, apenas verifique que não lança exceção
-        
-        // Act & Assert - Apenas verifique que o método executa sem exceções
+
         assertDoesNotThrow(() -> {
             simulationService.generateRandomOrder();
         });
-        
-        // Não verifique save() pois é random e pode não chamar
+
     }
     
     @Test
     void testUpdateDroneStates_idleDrone_shouldRemainIdle() {
-        // Arrange
         Drone idleDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
@@ -101,18 +97,15 @@ class SimulationServiceTest {
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(idleDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(idleDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Drone IDLE deve permanecer IDLE
+
         assertEquals(Drone.DroneStatus.IDLE, idleDrone.getStatus());
         verify(droneRepository).save(idleDrone);
     }
     
     @Test
     void testUpdateDroneStates_loadingDrone_shouldChangeToFlying() {
-        // Arrange
         Drone loadingDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
@@ -124,23 +117,20 @@ class SimulationServiceTest {
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(loadingDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(loadingDrone);
-        
-        // Act
+ 
         simulationService.updateDroneStates();
-        
-        // Assert - LOADING deve mudar para FLYING
+    
         assertEquals(Drone.DroneStatus.FLYING, loadingDrone.getStatus());
         verify(droneRepository).save(loadingDrone);
     }
     
     @Test
     void testUpdateDroneStates_flyingDroneWithLowBattery_shouldReturnToBase() {
-        // Arrange
         Drone flyingDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
             .status(Drone.DroneStatus.FLYING)
-            .currentBattery(15.0) // Bateria baixa
+            .currentBattery(15.0)
             .currentX(20.0)
             .currentY(20.0)
             .baseX(0.0)
@@ -148,21 +138,18 @@ class SimulationServiceTest {
             .build();
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(flyingDrone));
-        // NÃO mocke findByAssignedDroneId - deixe retornar null/empty naturalmente
         when(droneRepository.save(any(Drone.class))).thenReturn(flyingDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Com bateria < 20, deve mudar para RETURNING
+
         assertEquals(Drone.DroneStatus.RETURNING, flyingDrone.getStatus());
-        assertTrue(flyingDrone.getCurrentBattery() < 20.0); // Consumiu bateria
+        assertTrue(flyingDrone.getCurrentBattery() < 20.0);
         verify(droneRepository).save(flyingDrone);
     }
     
     @Test
     void testUpdateDroneStates_flyingDroneWithAssignedOrder_shouldMoveAndConsumeBattery() {
-        // Arrange
+
         Drone flyingDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
@@ -185,24 +172,21 @@ class SimulationServiceTest {
         when(droneRepository.findAll()).thenReturn(Arrays.asList(flyingDrone));
         when(orderRepository.findByAssignedDroneId("drone-1")).thenReturn(Arrays.asList(assignedOrder));
         when(droneRepository.save(any(Drone.class))).thenReturn(flyingDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
         
-        // Assert - Deve consumir bateria
         assertTrue(flyingDrone.getCurrentBattery() < 50.0);
         verify(droneRepository).save(flyingDrone);
     }
     
     @Test
     void testUpdateDroneStates_deliveringDrone_shouldDeliverOrders() {
-        // Arrange
         Drone deliveringDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
             .status(Drone.DroneStatus.DELIVERING)
             .currentBattery(40.0)
-            .currentX(30.0) // Já no destino
+            .currentX(30.0)
             .currentY(40.0)
             .baseX(0.0)
             .baseY(0.0)
@@ -219,11 +203,9 @@ class SimulationServiceTest {
         when(orderRepository.findByAssignedDroneId("drone-1")).thenReturn(Arrays.asList(pendingOrder));
         when(orderRepository.save(any(Order.class))).thenReturn(pendingOrder);
         when(droneRepository.save(any(Drone.class))).thenReturn(deliveringDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Pedido deve ser marcado como DELIVERED
+
         assertEquals(Order.OrderStatus.DELIVERED, pendingOrder.getStatus());
         assertNotNull(pendingOrder.getDeliveredAt());
         assertEquals(Drone.DroneStatus.RETURNING, deliveringDrone.getStatus());
@@ -233,13 +215,12 @@ class SimulationServiceTest {
     
     @Test
     void testUpdateDroneStates_returningDroneAtBase_shouldChargeOrIdle() {
-        // Arrange
         Drone returningDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
             .status(Drone.DroneStatus.RETURNING)
-            .currentBattery(25.0) // < 30, deve carregar
-            .currentX(0.1) // Quase na base
+            .currentBattery(25.0)
+            .currentX(0.1)
             .currentY(0.1)
             .baseX(0.0)
             .baseY(0.0)
@@ -248,17 +229,15 @@ class SimulationServiceTest {
         when(droneRepository.findAll()).thenReturn(Arrays.asList(returningDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(returningDrone);
         
-        // Act
         simulationService.updateDroneStates();
-        
-        // Assert - Com bateria < 30, deve mudar para CHARGING
+
         assertEquals(Drone.DroneStatus.CHARGING, returningDrone.getStatus());
         verify(droneRepository).save(returningDrone);
     }
     
     @Test
     void testUpdateDroneStates_chargingDrone_shouldRechargeBattery() {
-        // Arrange
+
         Drone chargingDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
@@ -268,39 +247,34 @@ class SimulationServiceTest {
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(chargingDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(chargingDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Bateria deve aumentar
+
         assertTrue(chargingDrone.getCurrentBattery() > 50.0);
         verify(droneRepository).save(chargingDrone);
     }
     
     @Test
     void testUpdateDroneStates_chargingDroneFullBattery_shouldBecomeIdle() {
-        // Arrange
         Drone chargingDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
             .status(Drone.DroneStatus.CHARGING)
-            .currentBattery(85.0) // Após recarga ficará >= 80
+            .currentBattery(85.0)
             .build();
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(chargingDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(chargingDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Com bateria >= 80, deve voltar para IDLE
+
         assertEquals(Drone.DroneStatus.IDLE, chargingDrone.getStatus());
         verify(droneRepository).save(chargingDrone);
     }
     
     @Test
     void testResetSimulation_shouldClearOrdersAndResetDrones() {
-        // Arrange
+
         Drone testDrone = Drone.builder()
             .id("drone-1")
             .name("Test Drone")
@@ -314,11 +288,9 @@ class SimulationServiceTest {
             
         when(droneRepository.findAll()).thenReturn(Arrays.asList(testDrone));
         when(droneRepository.save(any(Drone.class))).thenReturn(testDrone);
-        
-        // Act
+
         simulationService.resetSimulation();
-        
-        // Assert
+ 
         verify(orderRepository).deleteAll();
         verify(droneRepository).save(testDrone);
         assertEquals(Drone.DroneStatus.IDLE, testDrone.getStatus());
@@ -329,9 +301,7 @@ class SimulationServiceTest {
     
     @Test
     void testMoveDroneToDestination_withNoAssignedOrders_shouldConsumeBattery() {
-        // Este teste verifica o comportamento quando não há pedidos atribuídos
-        
-        // Arrange
+
         Drone flyingDrone = Drone.builder()
             .id("drone-1")
             .status(Drone.DroneStatus.FLYING)
@@ -345,11 +315,9 @@ class SimulationServiceTest {
         when(droneRepository.findAll()).thenReturn(Arrays.asList(flyingDrone));
         when(orderRepository.findByAssignedDroneId("drone-1")).thenReturn(Arrays.asList());
         when(droneRepository.save(any(Drone.class))).thenReturn(flyingDrone);
-        
-        // Act
+
         simulationService.updateDroneStates();
-        
-        // Assert - Deve consumir bateria mesmo sem destino específico
+
         assertTrue(flyingDrone.getCurrentBattery() < 60.0);
         verify(droneRepository).save(flyingDrone);
     }

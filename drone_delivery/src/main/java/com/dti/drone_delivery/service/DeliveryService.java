@@ -1,13 +1,16 @@
 package com.dti.drone_delivery.service;
 
-import com.dti.drone_delivery.model.Delivery;
-import com.dti.drone_delivery.repository.DeliveryRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.dti.drone_delivery.model.Delivery;
+import com.dti.drone_delivery.repository.DeliveryRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -67,8 +70,7 @@ public class DeliveryService {
         report.put("completedDeliveries", completed.size());
         report.put("successRate", deliveries.isEmpty() ? 0 : 
             (double) completed.size() / deliveries.size() * 100);
-        
-        // Estatísticas de tempo
+
         double totalTime = completed.stream()
             .filter(d -> d.getTotalTime() != null)
             .mapToDouble(Delivery::getTotalTime)

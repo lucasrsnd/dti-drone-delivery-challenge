@@ -47,14 +47,11 @@ class DeliveryServiceTest {
     
     @Test
     void testGetAllDeliveries_shouldReturnAll() {
-        // Arrange
         Delivery delivery2 = Delivery.builder().id("delivery-2").build();
         when(deliveryRepository.findAll()).thenReturn(Arrays.asList(delivery, delivery2));
-        
-        // Act
+
         List<Delivery> result = deliveryService.getAllDeliveries();
-        
-        // Assert
+
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(deliveryRepository).findAll();
@@ -62,14 +59,11 @@ class DeliveryServiceTest {
     
     @Test
     void testGetDeliveriesByDrone_shouldFilterByDrone() {
-        // Arrange
         when(deliveryRepository.findByDroneId("drone-1"))
             .thenReturn(Arrays.asList(delivery));
-        
-        // Act
+
         List<Delivery> result = deliveryService.getDeliveriesByDrone("drone-1");
-        
-        // Assert
+
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("drone-1", result.get(0).getDroneId());
@@ -78,14 +72,11 @@ class DeliveryServiceTest {
     
     @Test
     void testGetDeliveriesByStatus_shouldFilterByStatus() {
-        // Arrange
         when(deliveryRepository.findByStatus(Delivery.DeliveryStatus.IN_PROGRESS))
             .thenReturn(Arrays.asList(delivery));
-        
-        // Act
+
         List<Delivery> result = deliveryService.getDeliveriesByStatus(Delivery.DeliveryStatus.IN_PROGRESS);
-        
-        // Assert
+
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(Delivery.DeliveryStatus.IN_PROGRESS, result.get(0).getStatus());
@@ -94,13 +85,10 @@ class DeliveryServiceTest {
     
     @Test
     void testCreateDelivery_shouldSaveNewDelivery() {
-        // Arrange
         when(deliveryRepository.save(any(Delivery.class))).thenReturn(delivery);
-        
-        // Act
+
         Delivery result = deliveryService.createDelivery("order-1", "drone-1");
-        
-        // Assert
+
         assertNotNull(result);
         assertEquals("order-1", result.getOrderId());
         assertEquals("drone-1", result.getDroneId());
@@ -111,7 +99,6 @@ class DeliveryServiceTest {
     
     @Test
     void testCompleteDelivery_shouldUpdateStatusAndMetrics() {
-        // Arrange
         Delivery inProgressDelivery = Delivery.builder()
             .id("delivery-1")
             .startedAt(LocalDateTime.now().minusMinutes(15))
@@ -120,11 +107,9 @@ class DeliveryServiceTest {
             
         when(deliveryRepository.findById("delivery-1")).thenReturn(Optional.of(inProgressDelivery));
         when(deliveryRepository.save(any(Delivery.class))).thenReturn(inProgressDelivery);
-        
-        // Act
+
         Delivery result = deliveryService.completeDelivery("delivery-1", 10.5, 15.0);
         
-        // Assert
         assertNotNull(result);
         assertEquals(Delivery.DeliveryStatus.COMPLETED, result.getStatus());
         assertNotNull(result.getDeliveredAt());
@@ -136,10 +121,8 @@ class DeliveryServiceTest {
     
     @Test
     void testCompleteDelivery_notFound_shouldThrowException() {
-        // Arrange
         when(deliveryRepository.findById("non-existent")).thenReturn(Optional.empty());
-        
-        // Act & Assert
+
         assertThrows(RuntimeException.class, () -> {
             deliveryService.completeDelivery("non-existent", 10.0, 5.0);
         });
@@ -147,7 +130,6 @@ class DeliveryServiceTest {
     
     @Test
     void testGenerateDeliveryReport_withCompletedDeliveries_shouldCalculateMetrics() {
-        // Arrange
         Delivery completed1 = Delivery.builder()
             .status(Delivery.DeliveryStatus.COMPLETED)
             .distanceTraveled(10.0)
@@ -169,31 +151,26 @@ class DeliveryServiceTest {
         
         when(deliveryRepository.findByStatus(Delivery.DeliveryStatus.COMPLETED))
             .thenReturn(Arrays.asList(completed1, completed2));
-        
-        // Act
+
         Map<String, Object> report = deliveryService.generateDeliveryReport();
-        
-        // Assert
+
         assertNotNull(report);
         assertEquals(3, report.get("totalDeliveries"));
         assertEquals(2, report.get("completedDeliveries"));
-        assertEquals(30.0, report.get("totalDistanceKm")); // 10 + 20
-        assertEquals(20.0, report.get("averageDeliveryTimeMinutes")); // (15+25)/2
+        assertEquals(30.0, report.get("totalDistanceKm"));
+        assertEquals(20.0, report.get("averageDeliveryTimeMinutes"));
         assertTrue(((double) report.get("successRate")) > 0);
         assertNotNull(report.get("reportGenerated"));
     }
     
     @Test
     void testGenerateDeliveryReport_withNoDeliveries_shouldHandleGracefully() {
-        // Arrange
         when(deliveryRepository.findAll()).thenReturn(Arrays.asList());
         when(deliveryRepository.findByStatus(Delivery.DeliveryStatus.COMPLETED))
             .thenReturn(Arrays.asList());
-        
-        // Act
+
         Map<String, Object> report = deliveryService.generateDeliveryReport();
-        
-        // Assert
+
         assertNotNull(report);
         assertEquals(0, report.get("totalDeliveries"));
         assertEquals(0, report.get("completedDeliveries"));

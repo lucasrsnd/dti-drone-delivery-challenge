@@ -10,8 +10,7 @@ const Dashboard = () => {
   const [metrics, setMetrics] = useState({});
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
-  
-  // NOVOS ESTADOS PARA PAGINAÇÃO E FILTROS
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
@@ -108,7 +107,6 @@ const Dashboard = () => {
     }
   };
 
-  // Funções de filtragem e paginação
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === '' || 
       (order.customerName && order.customerName.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -182,9 +180,9 @@ const Dashboard = () => {
 
   return (
     <div className="section-container">
-      {/* Seção 1: Visão Geral */}
+      {}
       <section id="visao-geral" className="section fade-in">
-        <h3 className="section-title">📊 Visão Geral da Operação</h3>
+        <h3 className="section-title">Visão Geral da Operação</h3>
         
         {loading ? (
           <div className="loading-grid">
@@ -253,12 +251,12 @@ const Dashboard = () => {
         )}
       </section>
 
-      {/* Seção 2: Monitoramento + Análise */}
+      {}
       <div className="monitoramento-analise-row">
-        {/* Monitoramento em Tempo Real */}
+        {}
         <section id="monitoramento" className="section fade-in">
           <div className="section-header">
-            <h3 className="section-title">🗺️ Monitoramento em Tempo Real</h3>
+            <h3 className="section-title">Monitoramento em Tempo Real</h3>
             <div className="connection-status">
               <span className={`status-indicator ${connected ? 'connected' : 'disconnected'}`}></span>
               {connected ? 'Conectado' : 'Conectando...'}
@@ -268,7 +266,7 @@ const Dashboard = () => {
             <DroneMap drones={drones} orders={orders} />
           </div>
           
-          {/* CARDS DE STATUS - RESTAURADOS */}
+          {}
           <div className="map-status-cards">
             <div className="map-status-card">
               <div className="map-status-icon" style={{ background: 'rgba(37, 99, 235, 0.2)', color: '#3b82f6' }}>
@@ -302,80 +300,38 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* Análise de Desempenho */}
+        {}
         <section className="section fade-in">
-          <h3 className="section-title">📈 Análise de Desempenho</h3>
+          <h3 className="section-title">Análise de Desempenho</h3>
           <div className="chart-container">
             <MetricsChart drones={drones} orders={orders} />
           </div>
-          <div className="performance-summary">
-            <div className="performance-item">
-              <div className="performance-label">
-                <span>Eficiência de Operação</span>
-                <span>85%</span>
-              </div>
-              <div className="performance-bar">
-                <div className="performance-fill" style={{ width: '85%' }}></div>
-              </div>
-            </div>
-            <div className="performance-item">
-              <div className="performance-label">
-                <span>Satisfação do Cliente</span>
-                <span>94%</span>
-              </div>
-              <div className="performance-bar">
-                <div className="performance-fill" style={{ width: '94%' }}></div>
-              </div>
-            </div>
-          </div>
+
         </section>
       </div>
 
-      {/* Seção 3: Controle de Operações */}
+      {}
       <section id="controle" className="section fade-in">
-        <h3 className="section-title">🎮 Controle de Operações</h3>
+        <h3 className="section-title">Controle de Operações</h3>
         <ControlPanel 
           onAllocate={handleAllocate}
           onGenerateOrder={handleGenerateOrder}
           onStartSimulation={handleStartSimulation}
         />
         
-        <div className="operation-status">
-          <div className="status-item">
-            <div className="status-dot active"></div>
-            <div className="status-text">
-              <strong>Sistema Operacional</strong>
-              <span>Status: {connected ? 'Normal' : 'Iniciando'}</span>
-            </div>
-          </div>
-          <div className="status-item">
-            <div className="status-dot active"></div>
-            <div className="status-text">
-              <strong>Banco de Dados</strong>
-              <span>Status: Conectado</span>
-            </div>
-          </div>
-          <div className="status-item">
-            <div className="status-dot active"></div>
-            <div className="status-text">
-              <strong>Alocação Automática</strong>
-              <span>Status: Ativo</span>
-            </div>
-          </div>
-        </div>
       </section>
 
-      {/* Seção 4: Frota de Drones */}
+      {}
       <section id="frota" className="section fade-in">
         <div className="data-card">
           <div className="data-card-header">
-            <h4 className="data-card-title">✈️ Frota de Drones</h4>
+            <h4 className="data-card-title">Frota de Drones</h4>
             <button 
               className="refresh-button-styled" 
               onClick={fetchDrones}
               disabled={loading}
             >
-              {loading ? '🔄 Atualizando...' : '🔄 Atualizar'}
+              {loading ? 'Atualizando...' : 'Atualizar'}
             </button>
           </div>
           <div className="data-card-body">
@@ -384,22 +340,22 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Seção 5: Pedidos em Andamento (Tabela Horizontal com Paginação) */}
+      {}
       <section id="pedidos" className="section fade-in">
         <div className="data-card">
           <div className="data-card-header">
-            <h4 className="data-card-title">📦 Pedidos em Andamento ({filteredOrders.length})</h4>
+            <h4 className="data-card-title">Pedidos em Andamento ({filteredOrders.length})</h4>
             <button 
               className="refresh-button-styled" 
               onClick={fetchOrders}
               disabled={loading}
             >
-              {loading ? '🔄 Atualizando...' : '🔄 Atualizar'}
+              {loading ? 'Atualizando...' : 'Atualizar'}
             </button>
           </div>
           
           <div className="data-card-body">
-            {/* Filtros de Busca */}
+            {}
             <div className="pedidos-filtro">
               <div className="search-box">
                 <span className="search-icon">🔍</span>
@@ -443,7 +399,7 @@ const Dashboard = () => {
               </button>
             </div>
             
-            {/* Tabela de Pedidos */}
+            {}
             <div className="pedidos-table-container">
               <table className="pedidos-horizontal-table">
                 <thead>
@@ -455,7 +411,6 @@ const Dashboard = () => {
                     <th>Localização</th>
                     <th>Criado</th>
                     <th>Entrega</th>
-                    <th>Drone</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -513,13 +468,6 @@ const Dashboard = () => {
                           <small className="text-muted">Em andamento</small>
                         )}
                       </td>
-                      <td>
-                        {order.assignedDrone ? (
-                          <small>{order.assignedDrone.substring(0, 8)}...</small>
-                        ) : (
-                          <small className="text-muted">Não atribuído</small>
-                        )}
-                      </td>
                     </tr>
                   ))}
                   {currentOrders.length === 0 && (
@@ -535,7 +483,7 @@ const Dashboard = () => {
               </table>
             </div>
             
-            {/* Paginação */}
+            {}
             {filteredOrders.length > 0 && (
               <div className="pedidos-pagination">
                 <div className="pagination-info">

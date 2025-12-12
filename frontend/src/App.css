@@ -1,4 +1,3 @@
-/* ===== RESET & BASE ===== */
 * {
   margin: 0;
   padding: 0;
@@ -31,10 +30,9 @@ body {
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
-  padding-top: var(--nav-height);
+  margin: 0;
 }
 
-/* ===== NAVBAR ===== */
 .navbar {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
   backdrop-filter: blur(10px);
@@ -47,6 +45,7 @@ body {
   z-index: 1000;
   height: var(--nav-height);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin: 0;
 }
 
 .navbar-container {
@@ -58,6 +57,7 @@ body {
   margin: 0 auto;
   width: 100%;
   gap: 2rem;
+  height: 100%;
 }
 
 .navbar-brand {
@@ -114,7 +114,7 @@ body {
 .nav-link {
   background: none;
   border: none;
-  color: #cbd5e1;
+  color: #ffffff !important;
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -126,7 +126,7 @@ body {
 }
 
 .nav-link:hover {
-  color: white;
+  color: white !important;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
@@ -184,7 +184,6 @@ body {
   font-weight: 500;
 }
 
-/* ===== HEADER PRINCIPAL ===== */
 .main-header {
   background: linear-gradient(135deg, 
     rgba(15, 23, 42, 0.8) 0%, 
@@ -192,6 +191,7 @@ body {
   padding: 3rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 2rem;
+  margin-top: var(--nav-height);
 }
 
 .header-content {
@@ -241,7 +241,6 @@ body {
   line-height: 1.6;
 }
 
-/* ===== MAIN CONTENT ===== */
 .main-content {
   flex: 1;
   padding: 0 2rem 2rem;
@@ -250,7 +249,6 @@ body {
   width: 100%;
 }
 
-/* ===== NOVA ORDEM DAS SEÇÕES ===== */
 .section-container {
   display: flex;
   flex-direction: column;
@@ -310,7 +308,6 @@ body {
   border-radius: 2px;
 }
 
-/* ===== SEÇÃO DE PEDIDOS HORIZONTAL ===== */
 #pedidos .data-card-body {
   max-height: none;
   overflow-x: auto;
@@ -373,7 +370,6 @@ body {
   border-bottom-right-radius: 8px;
 }
 
-/* ===== LAYOUT MONITORAMENTO + ANÁLISE ===== */
 .monitoramento-analise-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -381,7 +377,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* ===== METRICS GRID ===== */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -474,7 +469,6 @@ body {
 .trend-down { color: var(--danger); }
 .trend-danger { color: var(--danger); font-weight: 600; }
 
-/* ===== DATA CARDS ===== */
 .data-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
   border-radius: 16px;
@@ -508,7 +502,6 @@ body {
   overflow-y: auto;
 }
 
-/* ===== FROTA DE DRONES ===== */
 .frota-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -578,7 +571,6 @@ body {
   color: white;
 }
 
-/* ===== CONTROL PANEL ===== */
 .control-panel {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
   border-radius: 16px;
@@ -624,7 +616,6 @@ body {
   border: none;
 }
 
-/* ===== FOOTER ===== */
 .app-footer {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -647,6 +638,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: #ffffff !important;
+  font-weight: 600;
 }
 
 .footer-links {
@@ -656,25 +649,24 @@ body {
 }
 
 .footer-links a {
-  color: #94a3b8;
+  color: #ffffff !important;
   text-decoration: none;
   font-size: 0.875rem;
   transition: color 0.2s ease;
 }
 
 .footer-links a:hover {
-  color: white;
+  color: #cbd5e1 !important;
 }
 
 .copyright {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #94a3b8;
   text-align: center;
   flex-basis: 100%;
   margin-top: 1rem;
 }
 
-/* ===== ANÁLISE DE DESEMPENHO ===== */
 .performance-summary {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
@@ -683,7 +675,6 @@ body {
   margin-top: 1.5rem;
 }
 
-/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1200px) {
   .monitoramento-analise-row {
     grid-template-columns: 1fr;
@@ -768,7 +759,6 @@ body {
   }
 }
 
-/* ===== CARDS DE STATUS DO MAPA ===== */
 .map-status-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -821,7 +811,6 @@ body {
   color: white;
 }
 
-/* ===== PAGINAÇÃO DOS PEDIDOS ===== */
 .pedidos-pagination {
   display: flex;
   justify-content: space-between;
@@ -899,7 +888,6 @@ body {
   border-color: transparent;
 }
 
-/* ===== FILTRO DE BUSCA ===== */
 .pedidos-filtro {
   margin-bottom: 1.5rem;
   display: flex;
@@ -982,7 +970,6 @@ body {
   color: #ef4444;
 }
 
-/* ===== BOTÃO ATUALIZAR ESTILIZADO ===== */
 .refresh-button-styled {
   background: rgba(37, 99, 235, 0.2);
   border: 1px solid rgba(37, 99, 235, 0.3);
@@ -1011,7 +998,6 @@ body {
   transform: none !important;
 }
 
-/* ===== RESPONSIVIDADE ADICIONAL ===== */
 @media (max-width: 768px) {
   .map-status-cards {
     grid-template-columns: 1fr;

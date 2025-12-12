@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 
-const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
+const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation, onRefresh }) => {
   const [newOrder, setNewOrder] = useState({
     customerName: '',
     locationX: 0,
@@ -37,7 +37,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
   return (
     <Card>
       <Card.Header className="bg-dark text-white">
-        <h5>🎮 Painel de Controle</h5>
+        <h5>Painel de Controle</h5>
       </Card.Header>
       <Card.Body>
         <Row>
@@ -46,11 +46,11 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
               <h6>Ações Rápidas</h6>
               <div className="d-grid gap-2">
                 <Button variant="primary" onClick={onAllocate}>
-                  🔄 Alocar Pedidos aos Drones
+                  Alocar Pedidos aos Drones
                 </Button>
                 
                 <Button variant="success" onClick={onStartSimulation}>
-                  ▶️ Iniciar Simulação
+                  Iniciar Simulação
                 </Button>
                 
                 <Button variant="warning" onClick={() => {
@@ -58,7 +58,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
                     .then(() => alert('✅ Pedido aleatório gerado!'))
                     .catch(err => alert('❌ Erro: ' + err.message));
                 }}>
-                  📦 Gerar Pedido Aleatório
+                  Gerar Pedido Aleatório
                 </Button>
                 
                 <Button variant="info" onClick={() => {
@@ -66,7 +66,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
                     .then(() => alert('✅ Simulação reiniciada!'))
                     .catch(err => alert('❌ Erro: ' + err.message));
                 }}>
-                  🔄 Reiniciar Simulação
+                  Reiniciar Simulação
                 </Button>
               </div>
             </div>
@@ -136,7 +136,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
                 </Form.Group>
                 
                 <Button variant="dark" type="submit" className="w-100">
-                  📝 Criar Pedido
+                  Criar Pedido
                 </Button>
               </Form>
             </div>
@@ -180,7 +180,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
         <Form.Control name="maxDistance" type="number" step="1" placeholder="Alcance (km)" required />
       </Col>
       <Col md="auto">
-        <Button type="submit" variant="success">➕ Criar Drone</Button>
+        <Button type="submit" variant="success">Criar Drone</Button>
       </Col>
     </Row>
   </Form>
@@ -196,7 +196,7 @@ const ControlPanel = ({ onAllocate, onGenerateOrder, onStartSimulation }) => {
             .catch(err => alert('❌ Erro: ' + err.message));
     }
 }}>
-    🔄 Resetar Simulação
+    Resetar Simulação
 </Button>
         
         <div className="mt-3 p-2 bg-light rounded">

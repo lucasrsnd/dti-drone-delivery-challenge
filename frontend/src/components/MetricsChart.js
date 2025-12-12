@@ -23,7 +23,7 @@ ChartJS.register(
 );
 
 const MetricsChart = ({ drones, orders }) => {
-  // Dados para gráfico de status dos drones
+
   const droneStatusData = {
     labels: ['Ocioso', 'Carregando', 'Voando', 'Entregando', 'Retornando', 'Carregando'],
     datasets: [
@@ -44,7 +44,6 @@ const MetricsChart = ({ drones, orders }) => {
     ],
   };
 
-  // Dados para gráfico de prioridades dos pedidos
   const orderPriorityData = {
     labels: ['Urgente', 'Alta', 'Média', 'Baixa'],
     datasets: [
@@ -91,7 +90,7 @@ const MetricsChart = ({ drones, orders }) => {
         </div>
       </div>
       
-      {/* Estatísticas simples */}
+      {}
       <div className="mt-3 p-2 bg-light rounded">
         <small>
           <strong>Eficiência:</strong><br />

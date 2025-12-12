@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const DroneMap = ({ drones, orders }) => {
-  // Mapa simples em CSS
   return (
     <div className="drone-map-container">
       <div className="map-grid" style={{
@@ -14,7 +13,7 @@ const DroneMap = ({ drones, orders }) => {
         borderRadius: '8px',
         overflow: 'hidden'
       }}>
-        {/* Base (centro do mapa) */}
+        {}
         <div style={{
           position: 'absolute',
           left: '50%',
@@ -36,9 +35,8 @@ const DroneMap = ({ drones, orders }) => {
           }}>🏠 Base</div>
         </div>
 
-        {/* Drones */}
+        {}
         {drones.map((drone, index) => {
-          // Converter coordenadas para posição no mapa
           const x = 50 + (drone.currentX * 10);
           const y = 50 + (drone.currentY * 10);
           
@@ -96,7 +94,7 @@ const DroneMap = ({ drones, orders }) => {
           );
         })}
 
-        {/* Pedidos */}
+        {}
         {orders.filter(o => o.status === 'PENDING' || o.status === 'ASSIGNED').map((order) => {
           const x = 50 + (order.locationX * 10);
           const y = 50 + (order.locationY * 10);
@@ -133,7 +131,7 @@ const DroneMap = ({ drones, orders }) => {
           );
         })}
 
-        {/* Legenda */}
+        {}
         <div style={{
           position: 'absolute',
           bottom: '10px',
