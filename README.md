@@ -22,14 +22,21 @@ Desenvolvido como um sistema corporativo, a solução demonstra capacidade de pr
 
 ## 🎥 Demonstração
 
-### 📸 Screenshots
-| Dashboard Principal | Monitoramento em Tempo Real | Controle de Operações |
-|:---:|:---:|:---:|
-| ![Dashboard](https://via.placeholder.com/400x250/1e293b/ffffff?text=Vis%C3%A3o+Geral+da+Opera%C3%A7%C3%A3o) | ![Monitoramento](https://via.placeholder.com/400x250/0f172a/ffffff?text=Mapa+Tempo+Real) | ![Controle](https://via.placeholder.com/400x250/1e293b/ffffff?text=Painel+de+Controle) |
+## 📸 Screenshots
+🖥️ Dashboard Principal
+![Dashboard](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/dashboard.png)
 
-| Frota de Drones | Pedidos com Filtros | Análise de Desempenho |
-|:---:|:---:|:---:|
-| ![Frota](https://via.placeholder.com/400x250/0f172a/ffffff?text=Gest%C3%A3o+da+Frota) | ![Pedidos](https://via.placeholder.com/400x250/1e293b/ffffff?text=Pedidos+Paginados) | ![Análise](https://via.placeholder.com/400x250/0f172a/ffffff?text=Gr%C3%A1ficos+Desempenho) |
+📡 Monitoramento em Tempo Real
+![Monitoramento](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/monitoramento.png)
+
+🎛️ Controle de Operações
+![Controle](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/controle.png)
+
+🚁 Frota de Drones
+![Frota](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/frota.png)
+
+📦 Pedidos com Filtros
+![Pedidos](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/pedidos.png)
 
 ## ✨ Funcionalidades Principais
 
