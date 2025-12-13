@@ -20,8 +20,6 @@ O **AeroLogix Drone Systems** é uma solução completa para gestão de operaç�
 
 Desenvolvido como um sistema corporativo, a solução demonstra capacidade de processamento em tempo real, tomada de decisão automatizada e interface de gestão intuitiva para operadores.
 
-## 🎥 Demonstração
-
 ## 📸 Screenshots
 🖥️ Dashboard Principal
 ![Dashboard](https://raw.githubusercontent.com/lucasrsnd/dti-drone-delivery-challenge/refs/heads/main/dashboard.png)
